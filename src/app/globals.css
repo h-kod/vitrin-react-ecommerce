@@ -1,26 +1,242 @@
 @import "tailwindcss";
 
+/* ---------- Tasarım token'ları ----------
+   Tek tasarım: tüm sektörler ve sayfalar aynı paleti, fontu ve köşe dilini kullanır.
+   Açık mod standarttır, sistem temasından bağımsızdır. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --canvas: #faf8f5;
+  --surface: #ffffff;
+  --sunken: #f1ede7;
+  --ink: #1c1917;
+  --muted: #6b645f;
+  --line: #e7e2db;
+  --accent: #2f5d50;
+  --accent-ink: #ffffff;
+  --accent-soft: #e4efe9;
+  --danger: #b4432f;
+
+  --r-card: 1.5rem;
+  --r-ctl: 9999px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-geist-sans);
+  --radius-card: var(--r-card);
+  --radius-ctl: var(--r-ctl);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.14);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: clip;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Hareket katmanları ---------- */
+
+/* Kart görseli: yavaş zoom + tek seferlik ışık süpürmesi + yumuşak gölge (yalnız hover destekleyen cihazlarda) */
+.card-media {
+  transition: box-shadow 500ms var(--ease);
+}
+.card-media img {
+  transition: scale 900ms var(--ease);
+}
+.card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.38) 50%, transparent 65%);
+  translate: -120% 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .card-media {
+    box-shadow: 0 18px 32px -20px rgb(0 0 0 / 0.35);
+  }
+  .group:hover .card-media img {
+    scale: 1.08;
+  }
+  .group:hover .card-media::after {
+    translate: 120% 0;
+    transition: translate 900ms var(--ease);
+  }
+}
+.link-underline {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 500ms var(--ease);
+}
+.group:hover .link-underline,
+.group:focus-visible .link-underline {
+  background-size: 100% 1px;
+}
+
+/* Scroll-driven: listedeki öğeler görünür alana girerken yukarı süzülür ve netleşir */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+  .hero-parallax {
+    animation: parallax linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+  .hero-title {
+    animation: title-drift linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+}
+@keyframes reveal-up {
+  from { opacity: 0; translate: 0 36px; scale: 0.97; }
+}
+@keyframes parallax {
+  from { transform: scale(1.14) translateY(-6%); }
+  to { transform: scale(1.14) translateY(6%); }
+}
+@keyframes title-drift {
+  from { translate: 0 18px; }
+  to { translate: 0 -18px; }
+}
+
+/* ---------- View Transitions (React <ViewTransition>) ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease);
+}
+::view-transition-group(.morph) {
+  animation-duration: 600ms;
+  animation-timing-function: var(--ease);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% { filter: blur(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Slider */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.slide-copy {
+  transition: opacity 700ms var(--ease), translate 800ms var(--ease);
+}
+[data-active="false"] .slide-copy {
+  opacity: 0;
+  translate: 0 20px;
+}
+
+/* ---------- Kinetik başlık, marquee, çizgili metin ---------- */
+/* Maske kutusu aksanları (Ü, Ç, ö) kırpmasın: padding büyütür, negatif margin yerleşimi korur */
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0.24em 0.06em 0.16em;
+  margin: -0.24em -0.06em -0.16em;
+}
+.word > span {
+  display: inline-block;
+  animation: word-rise 1000ms var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 110ms);
+}
+/* Yalnız `from`: animation kapalıyken (reduced-motion) metin görünür kalır */
+@keyframes word-rise {
+  from { transform: translateY(110%) rotate(4deg); }
+}
+/* Soluk dolgu: kontur (text-stroke) değişken fontta üst üste binen konturları çizgi olarak gösteriyordu */
+.text-stroke {
+  color: color-mix(in srgb, var(--ink) 13%, transparent);
+}
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* Ana menü: aktif/hover sayfa altı çizgisi soldan dolar */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.2rem;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 450ms var(--ease);
+}
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* Oyuncu CTA: hover'da yaylı sallanma (yalnız hover destekleyen cihazlarda; reduced-motion animation'ı kapatır) */
+@keyframes jiggle {
+  20% { transform: rotate(-2.5deg) scale(1.05); }
+  40% { transform: rotate(2deg) scale(1.05); }
+  60% { transform: rotate(-1deg) scale(1.03); }
+  80% { transform: rotate(0.6deg) scale(1.01); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-jiggle:hover {
+    animation: jiggle 700ms var(--ease);
+  }
 }

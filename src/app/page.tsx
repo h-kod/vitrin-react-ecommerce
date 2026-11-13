@@ -1,69 +1,143 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ViewTransition } from "react";
+import { HeroSlider } from "@/components/HeroSlider";
+import { Marquee } from "@/components/Marquee";
+import { ProductCard } from "@/components/ProductCard";
+import { PromoBanner } from "@/components/PromoBanner";
+import { announcement, banners, perks, slides } from "@/data/campaigns";
+import { products } from "@/data/products";
+import { sectorList } from "@/sectors";
+
+const featured = ["m4", "e4", "g4", "m5", "m2", "e2", "g2", "e6"].flatMap((id) => products.find((p) => p.id === id) ?? []);
+// Satırlar elle bölünür: "Tek" birinci satırda yetim kalmasın
+const headline = [["Üç", "sektör."], ["Tek", "vitrin."]];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="flex flex-col gap-20 sm:gap-28">
+      {/* Hero: ekran dolduran display başlık, küçük gövde metni, asimetrik kampanya alanı */}
+      <section aria-label="Kampanyalar" className="flex flex-col gap-10">
+        <div className="flex flex-col gap-6">
+          <p className="w-fit rounded-ctl bg-accent-soft px-4 py-1.5 text-sm font-medium text-accent">{announcement}</p>
+          <h1
+            aria-label={headline.map((l) => l.join(" ")).join(" ")}
+            className="font-display text-[clamp(3.25rem,12vw,10rem)] font-semibold leading-[0.92]"
+          >
+            {headline.map((line, li) => (
+              <span key={li} className="block">
+                {line.map((w, wi) => (
+                  <span key={w} aria-hidden>
+                    {wi > 0 && " "}
+                    <span className="word">
+                      <span className={li ? "text-muted" : ""} style={{ "--i": li * 2 + wi } as React.CSSProperties}>
+                        {w}
+                      </span>
+                    </span>
+                  </span>
+                ))}
+              </span>
+            ))}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="max-w-sm text-base leading-relaxed text-muted md:ml-auto">
+            Moda, elektronik ve market tek vitrinde, tek sepette.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-8">
+            <HeroSlider slides={slides} />
+          </div>
+          {/* Sağ kolon bilerek aşağı kaydırıldı: simetriyi bozar, gözü slider'dan banner'lara akıtır */}
+          <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-4 lg:mt-16 lg:grid-cols-1">
+            {banners.map((b) => (
+              <PromoBanner key={b.id} banner={b} sizes="(min-width: 1024px) 380px, 50vw" />
+            ))}
+          </div>
         </div>
-      </main>
-    </div>
+
+        <ul className="grid gap-3 sm:grid-cols-3">
+          {perks.map((p) => (
+            <li key={p.id} className="rounded-card border border-line bg-surface px-5 py-4">
+              <p className="font-display font-semibold">{p.title}</p>
+              <p className="mt-0.5 text-sm text-muted">{p.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <Marquee items={sectorList.map((s) => s.name)} />
+
+      {/* Sektörler: kartlar kaydırdıkça üst üste biner */}
+      <section aria-labelledby="dunyalar" className="flex flex-col gap-10">
+        <div className="flex flex-col gap-3">
+          <h2 id="dunyalar" className="font-display text-4xl font-semibold leading-none sm:text-6xl">
+            Sektörlere göz at.
+          </h2>
+          <p className="max-w-md text-muted">Her sektörün vitrininden öne çıkan ürünleri keşfet.</p>
+        </div>
+        <div className="flex flex-col gap-[22vh] pb-[8vh]">
+          {sectorList.map((s, i) => {
+            const cover = products.find((p) => p.id === s.cover);
+            const shelf = products.filter((p) => p.sector === s.slug);
+            return (
+              <article
+                key={s.slug}
+                style={{ top: `calc(5rem + ${i} * 1rem)` }}
+                className="group sticky grid grid-cols-1 gap-6 rounded-card border border-line bg-surface p-4 shadow-soft md:grid-cols-12 md:items-center md:gap-10 md:p-6"
+              >
+                <Link
+                  href={`/${s.slug}`}
+                  prefetch
+                  aria-label={`${s.name} sektörüne git`}
+                  className="card-media relative isolate block aspect-[16/11] overflow-clip rounded-card bg-sunken md:col-span-7"
+                >
+                  {cover && (
+                    <ViewTransition name={`cover-${s.slug}`} share="morph" default="none">
+                      <div className="absolute inset-0 overflow-clip">
+                        <Image
+                          src={cover.image}
+                          alt=""
+                          fill
+                          sizes="(min-width: 768px) 58vw, 100vw"
+                          className="hero-parallax object-cover"
+                        />
+                      </div>
+                    </ViewTransition>
+                  )}
+                </Link>
+                <div className="flex flex-col items-start gap-3 md:col-span-5 md:pl-4">
+                  <p aria-hidden className="font-display text-[6rem] font-semibold leading-none text-stroke">0{i + 1}</p>
+                  <p className="text-sm text-muted">{s.kicker} · {shelf.length} ürün</p>
+                  <h3 className="font-display text-4xl font-semibold leading-none sm:text-5xl">{s.name}</h3>
+                  <p className="max-w-xs text-muted">{s.tagline}</p>
+                  <p className="text-sm text-muted">
+                    <span className="text-ink">Vitrinde:</span> {shelf.slice(0, 3).map((p) => p.name).join(" · ")}
+                  </p>
+                  <Link
+                    href={`/${s.slug}`}
+                    prefetch
+                    className="btn-jiggle mt-2 rounded-ctl border border-ink px-6 py-3 text-sm font-semibold transition hover:bg-ink hover:text-canvas active:scale-[0.97]"
+                  >
+                    Sektöre git →
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <h2 className="font-display text-4xl font-semibold leading-none sm:text-5xl">Öne çıkanlar</h2>
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4">
+          {featured.map((p) => (
+            <li key={p.id}>
+              <ProductCard product={p} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
   );
 }
