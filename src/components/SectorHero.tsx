@@ -23,16 +23,8 @@ export function SectorHero({ sector }: { sector: Sector }) {
           </div>
         </ViewTransition>
       )}
-      {/* Okunabilirlik için alt gradient; metin aşağıda, görselin üstünde (absolute değil) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" aria-hidden />
-
-      <div className="hero-title relative mt-auto flex flex-col gap-3 p-6 text-white sm:p-10">
-        <p className="w-fit rounded-ctl bg-black/45 px-3 py-1 text-xs font-medium backdrop-blur-sm">{sector.kicker}</p>
-        <h1 className="font-display text-5xl font-semibold leading-none [text-shadow:0_2px_24px_rgb(0_0_0/0.45)] sm:text-7xl">
-          {sector.name}
-        </h1>
-        <p className="max-w-md text-base text-white/85 [text-shadow:0_1px_12px_rgb(0_0_0/0.5)]">{sector.tagline}</p>
-      </div>
+      {/* Okunabilirlik gradient'i metinle birlikte kalktı; yalnızca görsel kaldı */}
+      <h1 className="sr-only">{sector.name}</h1>
     </header>
   );
 }

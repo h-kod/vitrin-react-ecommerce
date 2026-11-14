@@ -100,7 +100,12 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
             inert={i !== index}
             className="relative flex h-full min-h-[24rem] w-full shrink-0 snap-center sm:min-h-[28rem]"
           >
-            <div className="absolute inset-0 overflow-hidden" aria-hidden>
+            <Link
+              href={s.href}
+              prefetch
+              aria-label={s.title}
+              className="absolute inset-0 overflow-hidden"
+            >
               <Image
                 src={s.image}
                 alt=""
@@ -110,23 +115,9 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
                 className="object-cover"
                 style={{ objectPosition: s.pos }}
               />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5 sm:bg-gradient-to-r sm:from-black/75 sm:via-black/35 sm:to-transparent" aria-hidden />
-
-            <div className="slide-copy relative mt-auto flex max-w-lg flex-col items-start gap-3 p-6 pb-20 text-white sm:my-auto sm:p-12 sm:pb-12">
-              <p className="rounded-ctl bg-black/45 px-3 py-1 text-xs font-medium backdrop-blur-sm">{s.kicker}</p>
-              <h2 className="font-display text-3xl font-semibold leading-tight [text-shadow:0_2px_20px_rgb(0_0_0/0.5)] sm:text-5xl">
-                {s.title}
-              </h2>
-              <p className="text-white/90 [text-shadow:0_1px_12px_rgb(0_0_0/0.5)]">{s.text}</p>
-              <Link
-                href={s.href}
-                prefetch
-                className="btn-jiggle mt-1 rounded-ctl bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/90 active:scale-[0.97]"
-              >
-                {s.cta} →
-              </Link>
-            </div>
+            </Link>
+            {/* Kontrollerin okunabilirliği için alt gradient; slaytta metin yok */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" aria-hidden />
           </div>
         ))}
       </div>

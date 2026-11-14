@@ -112,11 +112,6 @@ body {
     animation-timeline: view();
     animation-range: cover;
   }
-  .hero-title {
-    animation: title-drift linear both;
-    animation-timeline: view();
-    animation-range: cover;
-  }
 }
 @keyframes reveal-up {
   from { opacity: 0; translate: 0 36px; scale: 0.97; }
@@ -124,10 +119,6 @@ body {
 @keyframes parallax {
   from { transform: scale(1.14) translateY(-6%); }
   to { transform: scale(1.14) translateY(6%); }
-}
-@keyframes title-drift {
-  from { translate: 0 18px; }
-  to { translate: 0 -18px; }
 }
 
 /* ---------- View Transitions (React <ViewTransition>) ---------- */
@@ -167,32 +158,8 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-.slide-copy {
-  transition: opacity 700ms var(--ease), translate 800ms var(--ease);
-}
-[data-active="false"] .slide-copy {
-  opacity: 0;
-  translate: 0 20px;
-}
 
-/* ---------- Kinetik başlık, marquee, çizgili metin ---------- */
-/* Maske kutusu aksanları (Ü, Ç, ö) kırpmasın: padding büyütür, negatif margin yerleşimi korur */
-.word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  padding: 0.24em 0.06em 0.16em;
-  margin: -0.24em -0.06em -0.16em;
-}
-.word > span {
-  display: inline-block;
-  animation: word-rise 1000ms var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 110ms);
-}
-/* Yalnız `from`: animation kapalıyken (reduced-motion) metin görünür kalır */
-@keyframes word-rise {
-  from { transform: translateY(110%) rotate(4deg); }
-}
+/* ---------- Marquee, çizgili metin ---------- */
 /* Soluk dolgu: kontur (text-stroke) değişken fontta üst üste binen konturları çizgi olarak gösteriyordu */
 .text-stroke {
   color: color-mix(in srgb, var(--ink) 13%, transparent);

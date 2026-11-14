@@ -5,44 +5,18 @@ import { HeroSlider } from "@/components/HeroSlider";
 import { Marquee } from "@/components/Marquee";
 import { ProductCard } from "@/components/ProductCard";
 import { PromoBanner } from "@/components/PromoBanner";
-import { announcement, banners, perks, slides } from "@/data/campaigns";
+import { banners, perks, slides } from "@/data/campaigns";
 import { products } from "@/data/products";
 import { sectorList } from "@/sectors";
 
 const featured = ["m4", "e4", "g4", "m5", "m2", "e2", "g2", "e6"].flatMap((id) => products.find((p) => p.id === id) ?? []);
-// Satırlar elle bölünür: "Tek" birinci satırda yetim kalmasın
-const headline = [["Üç", "sektör."], ["Tek", "vitrin."]];
 
 export default function Home() {
   return (
     <main className="flex flex-col gap-20 sm:gap-28">
-      {/* Hero: ekran dolduran display başlık, küçük gövde metni, asimetrik kampanya alanı */}
+      {/* Hero: yalnızca görsel; metin yok. Sayfa başlığı ekran okuyucular için korunur. */}
       <section aria-label="Kampanyalar" className="flex flex-col gap-10">
-        <div className="flex flex-col gap-6">
-          <p className="w-fit rounded-ctl bg-accent-soft px-4 py-1.5 text-sm font-medium text-accent">{announcement}</p>
-          <h1
-            aria-label={headline.map((l) => l.join(" ")).join(" ")}
-            className="font-display text-[clamp(3.25rem,12vw,10rem)] font-semibold leading-[0.92]"
-          >
-            {headline.map((line, li) => (
-              <span key={li} className="block">
-                {line.map((w, wi) => (
-                  <span key={w} aria-hidden>
-                    {wi > 0 && " "}
-                    <span className="word">
-                      <span className={li ? "text-muted" : ""} style={{ "--i": li * 2 + wi } as React.CSSProperties}>
-                        {w}
-                      </span>
-                    </span>
-                  </span>
-                ))}
-              </span>
-            ))}
-          </h1>
-          <p className="max-w-sm text-base leading-relaxed text-muted md:ml-auto">
-            Moda, elektronik ve market tek vitrinde, tek sepette.
-          </p>
-        </div>
+        <h1 className="sr-only">Üç sektör. Tek vitrin.</h1>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch">
           <div className="min-w-0 lg:col-span-8">
