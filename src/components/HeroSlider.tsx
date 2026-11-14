@@ -78,7 +78,7 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
     <section
       aria-roledescription="carousel"
       aria-label="Kampanyalar"
-      className="relative isolate overflow-hidden rounded-card bg-sunken shadow-soft"
+      className="relative isolate flex h-full flex-col overflow-hidden rounded-card bg-sunken shadow-soft"
       onMouseEnter={() => setHold(true)}
       onMouseLeave={() => setHold(false)}
       onFocus={() => setHold(true)}
@@ -87,7 +87,7 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
       <div
         ref={trackRef}
         aria-live={auto ? "off" : "polite"}
-        className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto"
+        className="no-scrollbar flex h-full snap-x snap-mandatory overflow-x-auto"
       >
         {slides.map((s, i) => (
           <div
@@ -98,7 +98,7 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
             aria-roledescription="slide"
             aria-label={`${i + 1} / ${slides.length}`}
             inert={i !== index}
-            className="relative flex min-h-[24rem] w-full shrink-0 snap-center sm:min-h-[28rem]"
+            className="relative flex h-full min-h-[24rem] w-full shrink-0 snap-center sm:min-h-[28rem]"
           >
             <div className="absolute inset-0 overflow-hidden" aria-hidden>
               <Image

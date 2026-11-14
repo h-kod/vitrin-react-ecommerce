@@ -8,7 +8,7 @@ export function PromoBanner({ banner, sizes }: { banner: Banner; sizes: string }
     <Link
       href={banner.href}
       prefetch
-      className="group relative isolate flex min-h-44 overflow-hidden rounded-card bg-sunken shadow-soft"
+      className="group relative isolate flex h-full min-h-44 overflow-hidden rounded-card bg-sunken shadow-soft"
     >
       <div className="card-media absolute inset-0 overflow-hidden">
         <Image

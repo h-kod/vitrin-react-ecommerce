@@ -44,12 +44,12 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch">
           <div className="min-w-0 lg:col-span-8">
             <HeroSlider slides={slides} />
           </div>
-          {/* Sağ kolon bilerek aşağı kaydırıldı: simetriyi bozar, gözü slider'dan banner'lara akıtır */}
-          <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-4 lg:mt-16 lg:grid-cols-1">
+          {/* Sağ kolon slider'ın yüksekliğini ikiye böler: banner'lar eşit yükseklikte, üst/alt kenarlar hizalı */}
+          <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-1 lg:grid-rows-2">
             {banners.map((b) => (
               <PromoBanner key={b.id} banner={b} sizes="(min-width: 1024px) 380px, 50vw" />
             ))}

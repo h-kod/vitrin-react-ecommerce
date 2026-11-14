@@ -75,6 +75,7 @@ async function Catalog({ sector, searchParams }: { sector: Sector; searchParams:
                 <Link
                   key={v}
                   href={hrefFor(f.key, v)}
+                  scroll={false}
                   aria-pressed={active}
                   className={`rounded-ctl border px-3.5 py-1.5 text-sm transition ${
                     active
@@ -89,7 +90,7 @@ async function Catalog({ sector, searchParams }: { sector: Sector; searchParams:
           </div>
         ))}
         {Object.keys(filters).length > 0 && (
-          <Link href={`/${sector.slug}`} className="w-fit text-sm text-muted underline underline-offset-4 hover:text-ink">
+          <Link href={`/${sector.slug}`} scroll={false} className="w-fit text-sm text-muted underline underline-offset-4 hover:text-ink">
             Filtreleri temizle
           </Link>
         )}
