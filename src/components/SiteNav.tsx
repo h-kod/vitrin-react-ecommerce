@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { sectorList } from "@/sectors";
 
-const isActive = (path: string, slug: string) => path === `/${slug}` || path.startsWith(`/${slug}/`);
+const isActive = (path: string | undefined, slug: string) =>
+  path !== undefined && (path === `/${slug}` || path.startsWith(`/${slug}/`));
 
 /** Masaüstü gezinme: geçerli sektör aria-current ile işaretlenir ve altı çizilir. */
-export function DesktopNav() {
-  const path = usePathname();
+function NavLinks({ path }: { path?: string }) {
   return (
     <nav aria-label="Ana menü" className="hidden items-center gap-1 md:flex">
       {sectorList.map((s) => (
@@ -27,13 +27,22 @@ export function DesktopNav() {
   );
 }
 
-/** Mobil menü: hamburger düğmesi ve tam genişlikte açılır panel. Rota değişince, Escape'te ve dışarı tıklayınca kapanır. */
-export function MobileMenu() {
+// usePathname() URL verisi okur ve cacheComponents altında prerender sırasında Suspense sınırı ister.
+export function DesktopNav() {
   const path = usePathname();
+  return <NavLinks path={path} />;
+}
+
+export function DesktopNavFallback() {
+  return <NavLinks />;
+}
+
+/** Mobil menü: hamburger düğmesi ve tam genişlikte açılır panel. Rota değişince, Escape'te ve dışarı tıklayınca kapanır. */
+function MobileMenuView({ path }: { path?: string }) {
   // Menü "hangi rotada açıldı" olarak tutulur: rota değişince efekt gerekmeden kendiliğinden kapanır
   const [openAt, setOpenAt] = useState<string | null>(null);
-  const open = openAt === path;
-  const setOpen = (v: boolean) => setOpenAt(v ? path : null);
+  const open = path !== undefined && openAt === path;
+  const setOpen = (v: boolean) => setOpenAt(v && path !== undefined ? path : null);
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,4 +101,13 @@ export function MobileMenu() {
       )}
     </div>
   );
+}
+
+export function MobileMenu() {
+  const path = usePathname();
+  return <MobileMenuView path={path} />;
+}
+
+export function MobileMenuFallback() {
+  return <MobileMenuView />;
 }

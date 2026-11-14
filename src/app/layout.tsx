@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { CartBadge, CartFallback } from "@/components/CartBadge";
 import { Cursor } from "@/components/Cursor";
-import { DesktopNav, MobileMenu } from "@/components/SiteNav";
+import { DesktopNav, DesktopNavFallback, MobileMenu, MobileMenuFallback } from "@/components/SiteNav";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin", "latin-ext"] });
@@ -24,12 +24,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/" className="text-xl font-semibold">
               vitrin<span className="text-accent">.</span>
             </Link>
-            <DesktopNav />
+            <Suspense fallback={<DesktopNavFallback />}>
+              <DesktopNav />
+            </Suspense>
             <div className="ml-auto flex items-center gap-2">
               <Suspense fallback={<CartFallback />}>
                 <CartBadge />
               </Suspense>
-              <MobileMenu />
+              <Suspense fallback={<MobileMenuFallback />}>
+                <MobileMenu />
+              </Suspense>
             </div>
           </div>
         </header>
